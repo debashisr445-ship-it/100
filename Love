@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mujhe Tum Yaad Aate Ho 💔</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #030305;
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            /* মোবাইল ব্রাউজারে সিলেক্ট বা লং-প্রেস মেনু ও ডাউনলোড অপশন বন্ধ করার জন্য */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* Background Video Styling */
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            pointer-events: none;
+            display: none;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 3, 5, 0.85);
+            z-index: -1;
+            transition: background 1.5s ease;
+        }
+
+        /* 3D Rain Background */
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            transform-style: preserve-3d;
+            display: none;
+        }
+
+        .rain-drop {
+            position: absolute;
+            background: linear-gradient(transparent, rgba(255, 23, 68, 0.8));
+            width: 2px;
+            height: 35px;
+            opacity: 0.7;
+            animation: fall3D linear infinite;
+        }
+
+        @keyframes fall3D {
+            0% { transform: translateZ(-300px) translateY(-50px); opacity: 0; }
+            50% { opacity: 0.9; }
+            100% { transform: translateZ(250px) translateY(105vh); opacity: 0.1; }
+        }
+
+        /* Floating Heart Particles */
+        .heart-particle {
+            position: absolute;
+            color: #ff1744;
+            font-size: 15px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255, 23, 68, 0.8);
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
+        /* Main 3D Glass Card */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(15, 15, 20, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(255, 23, 68, 0.6);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.98),
+                        -20px 0 65px rgba(255, 23, 68, 0.65),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            width: 90%;
+            max-width: 440px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out, box-shadow 0.5s ease;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            transform: translateZ(40px);
+            text-transform: uppercase;
+            color: #ff1744;
+            text-shadow: 0 0 15px rgba(255, 23, 68, 0.9), 3px 3px 0px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Visual Box with Video inside */
+        .visual-box {
+            margin: 15px auto 25px auto;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 23, 68, 0.8);
+            transform: translateZ(60px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+            display: none;
+        }
+
+        .visual-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* Subtitle with Typewriter Effect styling */
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 18px;
+            margin-bottom: 30px;
+            font-weight: 300;
+            transform: translateZ(30px);
+            min-height: 1.4em;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #ff1744;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #ff1744; } }
+
+        .area {
+            position: relative;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            transform: translateZ(50px);
+        }
+
+        button {
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            outline: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        #yes {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            color: #030305;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            z-index: 2;
+        }
+
+        #yes:hover {
+            transform: translateY(-8px) scale(1.08) translateZ(25px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.4);
+        }
+
+        #no {
+            background: linear-gradient(135deg, #ff1744 0%, #b71c1c 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        /* Result section */
+        #result {
+            display: none;
+            color: #f8fafc;
+            animation: fadeInResult 1.5s ease forwards;
+            transform: translateZ(50px);
+        }
+
+        @keyframes fadeInResult { from { opacity: 0; transform: translateZ(20px) scale(0.95); } to { opacity: 1; transform: translateZ(50px) scale(1); } }
+
+        #result h2 {
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        #result p {
+            color: #ff8a80;
+            font-size: 16px;
+            font-weight: 300;
+        }
+        
+        /* ২৫ সেকেন্ডের টাইমার কাউন্টডাউন স্টাইল */
+        #timerDisplay {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #ff8a80;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 30px 20px; width: 95%; }
+            h1 { font-size: 22px; letter-spacing: 1.5px; }
+            .subtitle { font-size: 15px; }
+            button { padding: 12px 30px; font-size: 14px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline controlslist="nodownload" id="bgVideo">
+        <source src="video.mp4" type="video/mp4">
+    </video>
+    
+    <div class="bg-overlay" id="bgOverlay"></div>
+
+    <div class="rain-container" id="rainContainer"></div>
+    
+    <!-- Heart Particle Container -->
+    <div id="heartsLayer"></div>
+
+    <!-- Audio (Music.mp1 করা হয়েছে) -->
+    <audio id="music" src="Music.mp1" preload="auto"></audio>
+
+    <div class="container" id="mainCard">
+
+        <h1>Mujhe Tum Yaad Aate Ho 💔</h1>
+
+        <!-- Box Video -->
+        <div class="visual-box" id="visualBox">
+            <video autoplay muted loop playsinline controlslist="nodownload" id="boxVideoElement">
+                <source src="Video.mp5" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- Subtitle Container -->
+        <div id="subtitleArea">
+            <div class="subtitle" id="subtitleText">Yaadein bahut dard deti hain...</div>
+        </div>
+
+        <div class="area" id="buttonArea">
+            <button id="yes">YES</button>
+            <button id="no">NO</button>
+        </div>
+
+        <div id="result">
+            <h2>Pata hai, fir bhi khush rehna... 🥀</h2>
+            <p>Waqt sab kuch badal deta hai, par kuch yaadein reh jaati hain.</p>
+            <div id="timerDisplay">Remaining time: <span id="timeLeft">25</span>s</div>
+        </div>
+
+    </div>
+
+    <script>
+        const mainCard = document.getElementById("mainCard");
+        const yesBtn = document.getElementById("yes");
+        const noBtn = document.getElementById("no");
+        const subtitleText = document.getElementById("subtitleText");
+        const buttonArea = document.getElementById("buttonArea");
+        const result = document.getElementById("result");
+        const visualBox = document.getElementById("visualBox");
+        const bgVideo = document.getElementById("bgVideo");
+        const bgOverlay = document.getElementById("bgOverlay");
+        const boxVideoElement = document.getElementById("boxVideoElement");
+        const music = document.getElementById("music");
+        const rainContainer = document.getElementById("rainContainer");
+        const heartsLayer = document.getElementById("heartsLayer");
+        const timeLeftSpan = document.getElementById("timeLeft");
+        const timerDisplay = document.getElementById("timerDisplay");
+
+        let noClickCount = 0;
+        let isNoOverYes = false;
+        let timerInterval = null;
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        function restartTyping(element, text) {
+            element.style.animation = 'none';
+            element.offsetHeight; 
+            element.style.animation = null; 
+            element.innerText = text;
+        }
+
+        function createRain() {
+            const drop = document.createElement('div');
+            drop.classList.add('rain-drop');
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (Math.random() * 0.5 + 0.3) + 's';
+            const randomZ = Math.floor(Math.random() * 300) - 150;
+            drop.style.transform = `translateZ(${randomZ}px)`;
+            rainContainer.appendChild(drop);
+            setTimeout(() => drop.remove(), 1500);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '&#10084;';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heartsLayer.appendChild(heart);
+            setTimeout(() => heart.remove(), 7000);
+        }
+
+        document.addEventListener("mousemove", (e) => {
+            const xAxis = (window.innerWidth / 2 - e.clientX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.clientY) / 25;
+            mainCard.style.transform = `rotateY(${-xAxis}deg) rotateX(${yAxis}deg) translateZ(10px)`;
+        });
+
+        document.addEventListener("mouseleave", () => {
+            mainCard.style.transform = `rotateY(0deg) rotateX(0deg) translateZ(0px)`;
+            mainCard.style.transition = "transform 0.5s ease";
+        });
+
+        document.addEventListener("mouseenter", () => {
+            mainCard.style.transition = "none";
+        });
+
+        noBtn.addEventListener("mouseover", moveButton);
+        noBtn.addEventListener("click", moveButton);
+
+        function moveButton(e) {
+            if (isNoOverYes) {
+                finalReaction();
+                return;
+            }
+
+            noClickCount++;
+            const messages = [
+                "Door mat jao...",
+                "Kyu nahi samajhte?",
+                "Thoda ruko na...",
+                "Bhula nahi paoge mujhe...",
+                "Chahe dil na chahe...",
+                "Bas ek baar haan kaho..."
+            ];
+            
+            if(noClickCount <= messages.length) {
+                 restartTyping(subtitleText, messages[noClickCount - 1]);
+                 const maxX = buttonArea.clientWidth - noBtn.offsetWidth;
+                 const maxY = buttonArea.clientHeight - noBtn.offsetHeight;
+                 const i = Math.max(0, Math.floor(Math.random() * maxX));
+                 const j = Math.max(0, Math.floor(Math.random() * maxY));
+                 
+                 noBtn.style.position = "absolute";
+                 noBtn.style.left = i + "px";
+                 noBtn.style.top = j + "px";
+            } else {
+                 restartTyping(subtitleText, "Jaante ho tum bhi yehi chahte ho...");
+                 
+                 const yesRect = yesBtn.getBoundingClientRect();
+                 const areaRect = buttonArea.getBoundingClientRect();
+                 
+                 noBtn.style.position = "absolute";
+                 noBtn.style.left = (yesRect.left - areaRect.left) + "px";
+                 noBtn.style.top = (yesRect.top - areaRect.top) + "px";
+                 noBtn.style.zIndex = "10";
+                 
+                 isNoOverYes = true;
+            }
+        }
+
+        function start25SecondsCountdown() {
+            let totalSeconds = 25;
+            timerDisplay.style.display = "block";
+            timeLeftSpan.innerText = totalSeconds;
+
+            timerInterval = setInterval(() => {
+                totalSeconds--;
+                timeLeftSpan.innerText = totalSeconds;
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    window.location.reload(); 
+                }
+            }, 1000);
+        }
+
+        function finalReaction() {
+            music.play().catch(e => console.log("Audio play interaction needed"));
+            
+            bgVideo.style.display = "block";
+            bgVideo.play();
+            bgOverlay.style.background = "rgba(3, 3, 5, 0.4)";
+            rainContainer.style.display = "block";
+            setInterval(createRain, 35);
+            setInterval(createHeart, 300);
+
+            visualBox.style.display = "block";
+            boxVideoElement.play();
+
+            subtitleText.style.display = "none";
+            buttonArea.style.display = "none";
+            result.style.display = "block";
+            
+            mainCard.style.boxShadow = "0 30px 60px rgba(0, 0, 0, 0.98), 0 0 65px rgba(255, 23, 68, 0.75)";
+
+            start25SecondsCountdown();
+        }
+
+        yesBtn.addEventListener("click", finalReaction);
+    </script>
+</body>
+
+</html>
